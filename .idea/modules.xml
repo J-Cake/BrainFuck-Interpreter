@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ide.iml" filepath="$PROJECT_DIR$/.idea/ide.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/brainfuck_interpreter.iml" filepath="$PROJECT_DIR$/.idea/brainfuck_interpreter.iml" />
     </modules>
   </component>
 </project>
