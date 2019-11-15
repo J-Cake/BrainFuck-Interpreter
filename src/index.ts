@@ -17,7 +17,7 @@ let rl = readline.createInterface({
     output: process.stdout
 });
 
-function query(): Promise<string> {
+function query(): Promise<string> { // Hi
     if (process.stdin.isTTY)
         process.stdin.setRawMode(true);
 
@@ -62,11 +62,11 @@ function query(): Promise<string> {
         if (fs.existsSync(filePath)) {
             file = fs.readFileSync(filePath, "utf8");
 
-            const tokens = await Lex(file, query).filter(i => !!i);
+            const tokens = await Lex(file).filter(i => !!i);
             const formatted = await Format(tokens).filter(i => !!i);
             // console.log(parsed);
 
-            await Execute(formatted);
+            await Execute(formatted, query);
 
             process.stdin.end();
             process.stdout.end();

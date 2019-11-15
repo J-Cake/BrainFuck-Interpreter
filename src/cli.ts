@@ -83,7 +83,7 @@ export default function prompt(queryFn: () => Promise<string>, rlIf: readline.In
             console.clear();
         else if (response) {
             bfHistory.push(response);
-            await Execute(await Format(await Lexer(response, queryFn)));
+            await Execute(await Format(await Lexer(response)), queryFn);
         }
 
         prompt(queryFn, rlIf);
