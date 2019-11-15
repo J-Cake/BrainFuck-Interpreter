@@ -1,15 +1,12 @@
-import readline from 'readline';
-
 import State from './state';
-
 
 
 export default class Token {
     type: string;
-    action: () => Promise<void|string>;
+    action: (query?: () => Promise<string>) => Promise<void | string>;
     body: Array<Token> = [];
 
-    constructor(type: string, action: () => Promise<void|string>) {
+    constructor(type: string, action: () => Promise<void | string>) {
         this.type = type;
         this.action = action;
     }
@@ -40,14 +37,17 @@ export default class Token {
         })
     }
 
-    static Read(query: () => Promise<string>): Token {
-        return new Token("Read", function (): Promise<string> {
-            return query();
+    static Read(): Token {
+        return new Token("Read", function (query?: () => Promise<string>): Promise<string> {
+            if (query)
+                return query();
+            else
+                throw new TypeError("Query Function is required");
         })
     }
 
     static Write(): Token {
-        return new Token("Write", async function() {
+        return new Token("Write", async function () {
             process.stdout.write(String.fromCharCode(State.memory[State.memoryIndex]));
         });
     }
@@ -61,7 +61,7 @@ export default class Token {
     }
 
     static Loop(body: Array<Token>): Token {
-        const token = new Token("Loop", async function() {
+        const token = new Token("Loop", async function () {
             while (State.memory[State.memoryIndex] > 0) {
                 for (const token of body)
                     await token.action();
