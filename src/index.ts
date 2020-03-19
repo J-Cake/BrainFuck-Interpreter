@@ -7,6 +7,7 @@ import os from "os";
 import Lex from './lexer';
 import Format from "./format";
 import Execute from "./executer";
+import ExecuteBreakable from "./execute-break";
 
 import CLI from './cli';
 import readline from "readline";
@@ -17,7 +18,7 @@ let rl = readline.createInterface({
     output: process.stdout
 });
 
-function query(): Promise<string> { // Hi
+export function query(): Promise<string> { // Hi
     if (process.stdin.isTTY)
         process.stdin.setRawMode(true);
 
@@ -35,7 +36,6 @@ function query(): Promise<string> { // Hi
             } else {
                 rl.question("", (ans: string) => resolve(ans[0]));
             }
-            // @ts-ignore
         }).then(function (key: string) {
             State.memory[State.memoryIndex] = key.charCodeAt(0);
             resolve(key);
@@ -62,8 +62,8 @@ function query(): Promise<string> { // Hi
         if (fs.existsSync(filePath)) {
             file = fs.readFileSync(filePath, "utf8");
 
-            const tokens = await Lex(file).filter(i => !!i);
-            const formatted = await Format(tokens).filter(i => !!i);
+            const tokens = Lex(file).filter(i => !!i);
+            const formatted = Format(tokens).filter(i => !!i);
             // console.log(parsed);
 
             await Execute(formatted, query);
@@ -81,3 +81,21 @@ function query(): Promise<string> { // Hi
         CLI(query, rl);
     }
 })();
+
+export default async (brainfuck: string, queryFunc?: () => Promise<string>) => Execute(
+    Format(
+        Lex(brainfuck).filter(i => !!i)
+    ).filter(i => !!i),
+    queryFunc || query);
+// export it so that people who want to write a graphical wrapper *cough* me *cough* can do that without having to rewrite the damn thing
+
+export const state = State;
+// mostly for debugging purposes
+// allows peeking at state before and after running certain command
+
+export const debuggable = {
+    Lex,
+    Format,
+    Execute,
+    ExecuteBreakable // it's the same function as Execute except it yields the state at every iterations. This allows one to attatch a debugger to it
+};

@@ -52,11 +52,11 @@ export default class Token {
         });
     }
 
-    static Start(): string {
+    static Start(): "[" { // this is really backwards, but if you don't know why I do this, perhaps read over the code, there's not that much of it
         return "[";
     }
 
-    static End(): string {
+    static End(): "]" { // same story here.
         return "]";
     }
 

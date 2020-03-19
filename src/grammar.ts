@@ -1,6 +1,8 @@
 import Token from './token';
 
-const Grammar = {
+const Grammar: {
+    [key: string]: () => Token | "[" | "]"
+} = {
     "+": Token.Increment,
     "-": Token.Decrement,
     "<": Token.LShift,

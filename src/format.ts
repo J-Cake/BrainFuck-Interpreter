@@ -1,6 +1,6 @@
 import Token from './token';
 
-export default function Format(tokens: Array<Token | "[" | "]">, depth: number = 0): Array<Token> {
+export default function Format(tokens: Array<Token | "[" | "]">, depth: number = 0): Token[] {
     const newTokenList: Array<Token> = [];
     const body: Array<Token> = [];
 
