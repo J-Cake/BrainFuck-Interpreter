@@ -59,7 +59,7 @@ function memory(query: string[]): string {
     } else if (req[0] === "pointer")
         return String(State.memoryIndex);
     else
-        return `Available options are "dump", "expand", "reduce", "fixed", "set" and "clear"`;
+        return `Available options are "dump", "expand <value>", "reduce <value>", "fixed <size>", "set <index> <value>" and "clear"`;
 }
 
 function history(query: string[]): string {
@@ -98,7 +98,7 @@ function memLoc(query: string[]): string {
         else
             return "Error, cannot set to value of non-numeric type";
     else
-        return `Available options are "dump | <nothing>", "set <number>" and "reset"`;
+        return `Available options are "dump | *nothing*", "set <number>" and "reset"`;
 }
 
 export default function prompt(queryFn: () => Promise<string>, rlIf: readline.Interface) {
