@@ -22,13 +22,14 @@ Commands can have aliases. Below is a list of all commands and their respective 
  - pointer, index, mem-loc
  - dump
  - clear, cls
+ - import, external, load
 
 ### memory
 
 The `memory` command handles the state of the memory registers.
 
 ```
-$ memory [arguments ...]
+> memory [arguments ...]
 ```
 
 The memory command takes sub commands. They are:
@@ -52,7 +53,7 @@ The memory command takes sub commands. They are:
 The `history` command handles the REPL command history.
 
 ```
-$ history [operation]
+> history [operation]
 ```
 
 The history command takes arguments:
@@ -68,7 +69,7 @@ The history command takes arguments:
 The `pointer` command deals with the current memory pointer.
 
 ```
-$ pointer [operation]
+> pointer [operation]
 ```
 
 The pointer command takes arguments:
@@ -80,6 +81,18 @@ The pointer command takes arguments:
 * `dump`: prints the pointer index to the command line
 * `set`: sets the pointer index to `value`
 * `reset`: resets the pointer index to 0
+
+### Imports
+
+```
+> import [file [... file]]
+```
+
+The import system allows the user to reference a file and execute it inside the REPL, allowing its debugging over a command line interface.
+
+All arguments to the import command are filepaths relative to the **CWD of the REPL script**. This is printed when the REPL starts. A file path can only contain a space if it surrounded by quotes. There is no limit to file paths that can be provided.
+
+---
 
 # The Future of Brainfuck-Interpreter.
 
