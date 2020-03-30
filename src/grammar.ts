@@ -1,7 +1,8 @@
 import Token from './token';
 
 const Grammar: {
-    [key: string]: () => Token | "[" | "]"
+    // [key: string]: () => Token | "[" | "]"
+    [key: string]: () => Token
 } = {
     "+": Token.Increment,
     "-": Token.Decrement,

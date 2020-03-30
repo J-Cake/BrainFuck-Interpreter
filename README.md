@@ -60,8 +60,8 @@ The history command takes arguments:
  - list
  - clear
 
-`list`: prints the command history to the command line
-`clear`: clears the command history
+* `list`: prints the command history to the command line
+* `clear`: clears the command history
 
 ### pointer
 
@@ -77,6 +77,11 @@ The pointer command takes arguments:
  - set <index>
  - reset
 
-`dump`: prints the pointer index to the command line
-`set`: sets the pointer index to `value`
-`reset`: resets the pointer index to 0
+* `dump`: prints the pointer index to the command line
+* `set`: sets the pointer index to `value`
+* `reset`: resets the pointer index to 0
+
+# The Future of Brainfuck-Interpreter.
+
+This project was inspired by a suggestion from YouTube. I saw the video and knew immediately what my next project was.
+I have also been interested in building a physical computer from wires and transistors. Combining them would be the next step. Since BrainFuck is *such* a simple language, writing a compiler / interpreter for it is not a particularly difficult taks. The next phase of this project is to write a computer that makes use of the brainfuck syntax as machine code statements. Since there are only 8 of them, the computer can get away with being 3 bits wide. For working memory, no more than eight bits (0 - 256) per index should be sufficient. In terms of actual computation, not much is required either. Simply an Adder / Subtracter and an increment / decrement. In order to create the looping constructs, a simple call stack system must exist. Since there are no conditionals as part of the language, jump statements are not necessary. 

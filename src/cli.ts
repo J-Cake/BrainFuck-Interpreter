@@ -101,8 +101,57 @@ function memLoc(query: string[]): string {
         return `Available options are "dump | *nothing*", "set <number>" and "reset"`;
 }
 
+async function load(query: string[], queryFn: () => Promise<string>): Promise<string> {
+    const files: string[] = [];
+
+    let stringStart: boolean = false;
+
+    const stringBody: string[] = [];
+
+    for (const arg of query.slice(1)) {
+        if (arg[0] === "\"") {
+            stringStart = true;
+            stringBody.push(arg);
+        } else if (arg[arg.length - 1] === "\"" && stringStart) {
+            stringStart = false;
+            stringBody.push(arg);
+            files.push(stringBody.join('').slice(1, -1));
+            stringBody.length = 0;
+        } else if (!stringStart)
+            files[Math.max(files.length - 1, 0)] = arg;
+        else
+            stringBody.push(arg);
+    }
+
+    const joinedBody = stringBody.join('');
+
+    if (joinedBody[joinedBody.length] !== "\"")
+        files.push(stringBody.join('').slice(1));
+    else
+        files.push(stringBody.join('').slice(1, -1));
+
+    const filesToImport: string[] = files.filter(i => !!i.trim());
+
+    const filesSkipped: string[] = [];
+
+    for (const file of filesToImport)
+        if (fs.existsSync(file))
+            await Execute(await Format(await Lexer(fs.readFileSync(file, 'utf8'))), queryFn);
+        else {
+            console.log(`File ${file} doesn't exist - Skipping`);
+            filesSkipped.push(file);
+        }
+
+    if (filesToImport.length - filesSkipped.length === 1)
+        return `Executed 1 file ${filesToImport.filter(i => !filesSkipped.includes(i))[0]}`;
+    else if (filesToImport.length - filesSkipped.length === 0)
+        return `None Executed`;
+    else
+        return `Executed ${filesToImport.length - filesSkipped.length} files: ${filesToImport.filter(i => !filesSkipped.includes(i)).join(', ')}`;
+}
+
 export default function prompt(queryFn: () => Promise<string>, rlIf: readline.Interface) {
-    rlIf.question("$ ", async function (response: string) {
+    rlIf.question("> ", async function (response: string) {
         let query = response.toLowerCase().split(" ");
 
         if (query[0] === "exit") {
@@ -118,6 +167,8 @@ export default function prompt(queryFn: () => Promise<string>, rlIf: readline.In
             console.log(memLoc(query));
         else if (query[0] === "cls" || query[0] === "clear")
             console.clear();
+        else if (query[0] === "import" || query[0] === "external" || query[0] === "load")
+            console.log(await load(query, queryFn));
         else if (response) {
             bfHistory.push(response);
             await Execute(await Format(await Lexer(response)), queryFn);

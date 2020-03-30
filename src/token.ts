@@ -6,9 +6,21 @@ export default class Token {
     action: (query?: () => Promise<string>) => Promise<void | string>;
     body: Array<Token> = [];
 
+    pos: {line: number, char: number} = {
+        line: 0,
+        char: 0
+    }
+
     constructor(type: string, action: () => Promise<void | string>) {
         this.type = type;
         this.action = action;
+    }
+
+    setPos(line: number, char: number): Token {
+        this.pos.line = line;
+        this.pos.char = char;
+
+        return this;
     }
 
     static Increment(): Token {
@@ -52,12 +64,20 @@ export default class Token {
         });
     }
 
-    static Start(): "[" { // this is really backwards, but if you don't know why I do this, perhaps read over the code, there's not that much of it
-        return "[";
+    // static Start(): "[" { // this is really backwards, but if you don't know why I do this, perhaps read over the code, there's not that much of it
+    //     return "[";
+    // }
+
+    // static End(): "]" { // same story here.
+    //     return "]";
+    // }
+
+    static Start(): Token {
+        return new Token("LoopStart", async function () {});
     }
 
-    static End(): "]" { // same story here.
-        return "]";
+    static End(): Token {
+        return new Token("LoopEnd", async function () {});
     }
 
     static Loop(body: Array<Token>): Token {
