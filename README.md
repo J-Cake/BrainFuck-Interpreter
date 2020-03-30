@@ -90,7 +90,7 @@ The pointer command takes arguments:
 
 The import system allows the user to reference a file and execute it inside the REPL, allowing its debugging over a command line interface.
 
-All arguments to the import command are filepaths relative to the **CWD of the REPL script**. This is printed when the REPL starts. A file path can only contain a space if it surrounded by quotes. There is no limit to file paths that can be provided.
+All arguments to the import command are filepaths relative to the **CWD of the REPL script**. This is printed when the REPL starts. A file path can only contain a space if it surrounded by quotes. There is no limit to file paths that can be provided.  
 
 ---
 
