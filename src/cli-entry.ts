@@ -4,10 +4,7 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
-import Lex from './lexer';
-import Format from "./format";
-import Execute from "./executer";
-import ExecuteBreakable from "./execute-break";
+import BrainFuck from './index';
 
 import CLI from './cli';
 import readline from "readline";
@@ -64,11 +61,13 @@ export function query(): Promise<string> { // Hi
         if (fs.existsSync(filePath)) {
             file = fs.readFileSync(filePath, "utf8");
 
-            const tokens = Lex(file).filter(i => !!i);
-            const formatted = Format(tokens).filter(i => !!i);
-            // console.log(parsed);
+            // const tokens = Lex(file).filter(i => !!i);
+            // const formatted = Format(tokens).filter(i => !!i);
+            // // console.log(parsed);
+            //
+            // await Execute(formatted, query);
 
-            await Execute(formatted, query);
+            await BrainFuck(file, query);
 
             process.stdin.end();
             process.stdout.end();
@@ -82,7 +81,7 @@ export function query(): Promise<string> { // Hi
     } else {
         process.stdout.write(`BrainFuck Interpreter Version ${Package.version}.\n`);
         process.stdout.write(`MIT - Jacob Schneider - 2020.\n`);
-        
+
         process.stdout.write(`CWD: ${process.cwd()}\n`);
 
         CLI(query, rl);

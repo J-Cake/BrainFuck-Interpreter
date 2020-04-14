@@ -4,11 +4,29 @@ import Format from './format';
 import Execute from './executer';
 import ExecuteBreakable from './execute-break';
 
-export default async (brainfuck: string, queryFunc: () => Promise<string>) => Execute(
+type interpreter = (brainfuck: string, queryFunc: () => Promise<string>) => Promise<number>;
+
+const exec: interpreter = (brainfuck: string, queryFunc: () => Promise<string>): Promise<number> => Execute(
     Format(
         Lex(brainfuck).filter(i => !!i)
     ).filter(i => !!i),
     queryFunc);
+
+const interpreters: {
+    [name: string]: interpreter
+} = {
+    basic: exec
+};
+
+function defaultFunction(): interpreter {
+    return exec;
+}
+
+export function interpreter(name: string, intereter: interpreter) {
+    interpreters[name] = intereter;
+}
+
+export default async (brainfuck: string, queryFunc: () => Promise<string>) => await defaultFunction()(brainfuck, queryFunc);
 // export it so that people who want to write a graphical wrapper *cough* me *cough* can do that without having to rewrite the damn thing
 
 export const state = State;
