@@ -1,9 +1,8 @@
 import State from './state';
 
-
 export default class Token {
     type: string;
-    action: (query?: () => Promise<string>) => Promise<void | string>;
+    action: (query?: () => Promise<string>) => Promise<void | number>;
     body: Array<Token> = [];
 
     pos: {line: number, char: number} = {
@@ -11,7 +10,7 @@ export default class Token {
         char: 0
     }
 
-    constructor(type: string, action: () => Promise<void | string>) {
+    constructor(type: string, action: () => Promise<void | number>) {
         this.type = type;
         this.action = action;
     }
@@ -50,12 +49,16 @@ export default class Token {
     }
 
     static Read(): Token {
-        return new Token("Read", function (query?: () => Promise<string>): Promise<string> {
+        return new Token("Read", function (query?: () => Promise<string>): Promise<number> {
             if (query)
-                return query();
+                return new Promise<number>(function (resolve) {
+                    return query()
+                        .then(res => resolve(res[0].charCodeAt(0)))
+                        .catch(() => resolve(0));
+                }).then(res => State.memory[State.memoryIndex] = res);
             else
                 throw new TypeError("Query Function is required");
-        })
+        });
     }
 
     static Write(): Token {
@@ -63,14 +66,6 @@ export default class Token {
             process.stdout.write(String.fromCharCode(State.memory[State.memoryIndex]));
         });
     }
-
-    // static Start(): "[" { // this is really backwards, but if you don't know why I do this, perhaps read over the code, there's not that much of it
-    //     return "[";
-    // }
-
-    // static End(): "]" { // same story here.
-    //     return "]";
-    // }
 
     static Start(): Token {
         return new Token("LoopStart", async function () {});

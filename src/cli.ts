@@ -2,9 +2,7 @@ import readline from "readline";
 import fs from 'fs';
 import path from 'path';
 
-import Lexer from './lexer';
-import Format from "./format";
-import Execute from "./executer";
+import BrainFuck from './index';
 import State from "./state";
 
 const bfHistory: string[] = [];
@@ -136,7 +134,8 @@ async function load(query: string[], queryFn: () => Promise<string>): Promise<st
 
     for (const file of filesToImport)
         if (fs.existsSync(file))
-            await Execute(await Format(await Lexer(fs.readFileSync(file, 'utf8'))), queryFn);
+            // await Execute(await Format(await Lexer(fs.readFileSync(file, 'utf8'))), queryFn);
+            await BrainFuck(fs.readFileSync(file, 'utf8'), queryFn);
         else {
             console.log(`File ${file} doesn't exist - Skipping`);
             filesSkipped.push(file);
@@ -151,7 +150,7 @@ async function load(query: string[], queryFn: () => Promise<string>): Promise<st
 }
 
 export default function prompt(queryFn: () => Promise<string>, rlIf: readline.Interface) {
-    rlIf.question("> ", async function (response: string) {
+    rlIf.question("# ", async function (response: string) {
         let query = response.toLowerCase().split(" ");
 
         if (query[0] === "exit") {
@@ -171,7 +170,8 @@ export default function prompt(queryFn: () => Promise<string>, rlIf: readline.In
             console.log(await load(query, queryFn));
         else if (response) {
             bfHistory.push(response);
-            await Execute(await Format(await Lexer(response)), queryFn);
+            // await Execute(await Format(await Lexer(response)), queryFn);
+            await BrainFuck(response, queryFn);
         }
 
         prompt(queryFn, rlIf);
