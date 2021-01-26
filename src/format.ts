@@ -1,10 +1,11 @@
 import type {Token} from "./lexer";
 import {TokenType} from "./lexer";
-import type {State} from "./state";
 import {Execute} from "./index";
 
+import state from "./state";
+
 export type queryFn = () => Promise<string>;
-export type Action = (state: State, query: queryFn) => Promise<void>; // can manipulate the current state and returns the success of the operation.
+export type Action = (query: queryFn) => Promise<void>; // can manipulate the current state and returns the success of the operation.
 
 export class Statement {
     action: Action;
@@ -31,12 +32,12 @@ export enum Actions {
 }
 
 export const actions: Record<Actions, Action> = {
-    [Actions.Inc]: async (state: State) => void state.memory[state.pointer]++,
-    [Actions.Dec]: async (state: State) => void state.memory[state.pointer]--,
-    [Actions.PInc]: async (state: State) => void Math.min((Math.max(void state.pointer++, 0)), state.memory.length),
-    [Actions.PDec]: async (state: State) => void Math.min((Math.max(void state.pointer--, 0)), state.memory.length),
-    [Actions.In]: async (state: State, query: queryFn) => void (state.memory[state.pointer] = (await query()).charCodeAt(0)),
-    [Actions.Out]: async (state: State) => void console.log(String.fromCharCode(state.memory[state.pointer])),
+    [Actions.Inc]: async _ => void state.memory[state.pointer]++,
+    [Actions.Dec]: async _ => void state.memory[state.pointer]--,
+    [Actions.PInc]: async _ => void Math.min((Math.max(void state.pointer++, 0)), state.memory.length),
+    [Actions.PDec]: async _ => void Math.min((Math.max(void state.pointer--, 0)), state.memory.length),
+    [Actions.In]: async (query: queryFn) => void (state.memory[state.pointer] = (await query()).charCodeAt(0)),
+    [Actions.Out]: async _ => void process.stdout.write(String.fromCharCode(state.memory[state.pointer])),
     [Actions.Loop]: async _ => void console.error('Invalid Loop'),
 }
 
@@ -50,41 +51,45 @@ const tokenTypeToActionMap: { [key in actions]: Actions } = {
     [TokenType.PInc]: Actions.PInc,
 }
 
-const p = (...x: any[]) => void console.log.apply(x) || x;
-
 export default function Format(tokens: Token[], depth: number = 0): Statement[] {
     const statements: Statement[] = [];
 
     let bracketIndex: number = 0;
     const bracketContent: Token[] = [];
-    for (const i of tokens) {
+
+    const emptyBody = (): true => {
+        if (bracketContent.length > 0)
+            statements.push(new Statement({
+                async action(query: queryFn): Promise<void> {
+                    const body: Statement[] = Format(this.source, depth + 1); // execute tokens;
+                    while (state.memory[state.pointer] > 0)
+                        if (this.evalFn)
+                            this.evalFn(body);
+                        else
+                            await Execute(body, query);
+                }, type: Actions.Loop,
+                source: Array.from(bracketContent)
+            }));
+        bracketContent.length = 0;
+        return true;
+    };
+
+    for (const i of tokens)
         if (i.type === TokenType.LBracket)
             bracketIndex++;
         else if (i.type === TokenType.RBracket)
             bracketIndex--
         else if (bracketIndex > 0)
             bracketContent.push(i);
-        else {
-            if (bracketContent.length > 0)
-                statements.push(new Statement({
-                    async action(state: State, query: queryFn): Promise<void> {
-                        const tokens: Statement[] = Format(this.source, depth + 1); // execute tokens;
-                        while (state[state.pointer] > 0)
-                            if (this.evalFn)
-                                this.evalFn(tokens);
-                            else
-                                await Execute(tokens, query);
-                    }, type: Actions.Loop,
-                    source: p(bracketContent.splice(0, bracketContent.length))[0]
-                }));
+        else if (emptyBody())
             if (i.type in tokenTypeToActionMap)
                 statements.push(new Statement({
                     action: actions[tokenTypeToActionMap[i.type]],
                     source: [i],
                     type: tokenTypeToActionMap[i.type]
                 }))
-        }
-    }
+
+    emptyBody();
 
     return statements;
 }

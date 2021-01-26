@@ -1,7 +1,7 @@
 {
 	"name": "bfc",
 	"description": "BrainFuck Interpreter! Execute and test BrainFuck in the Command Line!",
-	"version": "1.3.2",
+	"version": "2.0.1",
 	"main": "./dist/cli-entry.js",
 	"bin": "./dist/index.js",
 	"scripts": {

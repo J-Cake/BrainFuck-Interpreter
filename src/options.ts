@@ -9,8 +9,8 @@ export interface Options {
 }
 
 export const options: Options = {
-    maxMemory: 256,
-    prompt: `${process.cwd()} #`,
+    maxMemory: 4,
+    prompt: `#`,
     action: null
 }
 

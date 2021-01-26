@@ -150,7 +150,7 @@ async function load(query: string[], queryFn: () => Promise<string>): Promise<st
 }
 
 export default function prompt(queryFn: () => Promise<string>, rlIf: readline.Interface) {
-    rlIf.question("# ", async function (response: string) {
+    rlIf.question("~ ", async function (response: string) {
         let query = response.toLowerCase().split(" ");
 
         if (query[0] === "exit") {
@@ -170,7 +170,6 @@ export default function prompt(queryFn: () => Promise<string>, rlIf: readline.In
             console.log(await load(query, queryFn));
         else if (response) {
             bfHistory.push(response);
-            // await Execute(await Format(await Lexer(response)), queryFn);
             await BrainFuck(response, queryFn);
         }
 

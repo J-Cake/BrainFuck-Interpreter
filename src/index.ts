@@ -4,6 +4,7 @@ import state, {State} from './state';
 import Lex from './lexer';
 import Format, {queryFn, Statement} from './format';
 import initOptions, {debugAction, Options, options} from './options';
+import {inspect} from "util";
 
 install();
 
@@ -24,13 +25,13 @@ export const evalFn = async function(statements: Statement[], queryFn: queryFn, 
 
 export async function Execute(statements: Statement[], query: queryFn): Promise<number> {
     for (const i of statements)
-        await i.action(state, query);
+        await i.action(query);
     return state.memory[state.pointer];
 }
 
 export async function *ExecuteBreakable(statements: Statement[], query: queryFn): AsyncGenerator<State, number> {
     for (const i of statements) {
-        await i.action(state, query);
+        await i.action(query);
         yield state;
     }
     return state.memory[state.pointer];
@@ -38,7 +39,3 @@ export async function *ExecuteBreakable(statements: Statement[], query: queryFn)
 
 export default async (brainfuck: string, queryFunc: () => Promise<string>, options?: Options) => await exec(brainfuck, queryFunc, options);
 // export it so that people who want to write a graphical wrapper *cough* me *cough* can do that without having to rewrite the damn thing
-
-export {default as state} from './state';
-// mostly for debugging purposes
-// allows peeking at state before and after running certain command

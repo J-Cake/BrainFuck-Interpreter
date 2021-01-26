@@ -23,8 +23,8 @@ export const matchers: Record<TokenType, (char: string) => boolean> = {
     [TokenType.In]: tok => tok === ',',
     [TokenType.LBracket]: tok => tok === '[',
     [TokenType.RBracket]: tok => tok === ']',
-    [TokenType.Comment]: tok => /^#.*$/.test(tok),
-    [TokenType.WhiteSpace]: tok => /^\s+\n$/.test(tok),
+    [TokenType.Comment]: tok => /^#.*\n$/.test(tok),
+    [TokenType.WhiteSpace]: tok => /^\s+$/.test(tok),
 }
 
 export type Token = {
@@ -60,7 +60,7 @@ export default function Lex(input: string, fileName?: string): Token[] {
             tokens.push(token);
             source = source.slice(token.source.length);
         } else {
-            console.error(`Invalid token ${token.source}`);
+            console.error(`Invalid token ${accumulator.join('')}`);
             process.exit(1);
         }
     }
