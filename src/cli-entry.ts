@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-import os from "os";
+import * as readline from "readline";
+import * as fs from "fs";
+import * as path from "path";
+import * as os from "os";
 
 import BrainFuck from './index';
 
 import CLI from './cli';
-import readline from "readline";
 
 const Package = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 

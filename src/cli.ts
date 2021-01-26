@@ -1,6 +1,6 @@
-import readline from "readline";
-import fs from 'fs';
-import path from 'path';
+import * as readline from "readline";
+import * as fs from 'fs';
+import * as path from 'path';
 
 import BrainFuck from './index';
 import State from "./state";

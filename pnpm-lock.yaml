@@ -1,6 +1,6 @@
 dependencies:
   '@types/node': 12.12.30
-lockfileVersion: 5.1
+lockfileVersion: 5.2
 packages:
   /@types/node/12.12.30:
     dev: false

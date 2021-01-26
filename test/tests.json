@@ -1,0 +1,144 @@
+{
+    "./tests/testLexer.js": [
+        {
+            "type": "Inc",
+            "pos": {
+                "line": 0,
+                "char": 1
+            }
+        },
+        {
+            "type": "Dec",
+            "pos": {
+                "line": 0,
+                "char": 2
+            }
+        },
+        {
+            "type": "RShift",
+            "pos": {
+                "line": 0,
+                "char": 3
+            }
+        },
+        {
+            "type": "LShift",
+            "pos": {
+                "line": 0,
+                "char": 4
+            }
+        },
+        {
+            "type": "Read",
+            "pos": {
+                "line": 0,
+                "char": 5
+            }
+        },
+        {
+            "type": "Write",
+            "pos": {
+                "line": 0,
+                "char": 6
+            }
+        },
+        {
+            "type": "LoopStart",
+            "pos": {
+                "line": 0,
+                "char": 7
+            }
+        },
+        {
+            "type": "LoopEnd",
+            "pos": {
+                "line": 0,
+                "char": 8
+            }
+        }
+    ],
+    "./tests/testFormatter.js": [
+        {
+            "type": "Inc",
+            "pos": {
+                "line": 0,
+                "char": 1
+            },
+            "body": []
+        },
+        {
+            "type": "Inc",
+            "pos": {
+                "line": 0,
+                "char": 2
+            },
+            "body": []
+        },
+        {
+            "type": "Inc",
+            "pos": {
+                "line": 0,
+                "char": 3
+            },
+            "body": []
+        },
+        {
+            "type": "Loop",
+            "pos": {
+                "line": 0,
+                "char": 0
+            },
+            "body": [
+                {
+                    "type": "RShift",
+                    "pos": {
+                        "line": 0,
+                        "char": 5
+                    },
+                    "body": []
+                },
+                {
+                    "type": "Inc",
+                    "pos": {
+                        "line": 0,
+                        "char": 6
+                    },
+                    "body": []
+                },
+                {
+                    "type": "Inc",
+                    "pos": {
+                        "line": 0,
+                        "char": 7
+                    },
+                    "body": []
+                },
+                {
+                    "type": "Inc",
+                    "pos": {
+                        "line": 0,
+                        "char": 8
+                    },
+                    "body": []
+                },
+                {
+                    "type": "LShift",
+                    "pos": {
+                        "line": 0,
+                        "char": 9
+                    },
+                    "body": []
+                },
+                {
+                    "type": "Dec",
+                    "pos": {
+                        "line": 0,
+                        "char": 10
+                    },
+                    "body": []
+                }
+            ]
+        }
+    ],
+    "./tests/testExecuter.js": []
+}

@@ -3,14 +3,14 @@ import Lex from './lexer';
 import Format from './format';
 import Execute from './executer';
 import ExecuteBreakable from './execute-break';
+import initOptions, {Options, options} from './options';
 
-type interpreter = (brainfuck: string, queryFunc: () => Promise<string>) => Promise<number>;
+type interpreter = (brainfuck: string, queryFunc: () => Promise<string>, options?: Options) => Promise<number>;
 
-const exec: interpreter = (brainfuck: string, queryFunc: () => Promise<string>): Promise<number> => Execute(
-    Format(
-        Lex(brainfuck).filter(i => !!i)
-    ).filter(i => !!i),
-    queryFunc);
+const exec: interpreter = (brainfuck: string, queryFunc: () => Promise<string>, options?: Options): Promise<number> => {
+    initOptions(options)
+    return Execute(Format(Lex(brainfuck).filter(i => !!i)).filter(i => !!i), queryFunc);
+}
 
 const interpreters: {
     [name: string]: interpreter
@@ -26,7 +26,7 @@ export function interpreter(name: string, intereter: interpreter) {
     interpreters[name] = intereter;
 }
 
-export default async (brainfuck: string, queryFunc: () => Promise<string>) => await defaultFunction()(brainfuck, queryFunc);
+export default async (brainfuck: string, queryFunc: () => Promise<string>, options?: Options) => await defaultFunction()(brainfuck, queryFunc, options);
 // export it so that people who want to write a graphical wrapper *cough* me *cough* can do that without having to rewrite the damn thing
 
 export const state = State;
