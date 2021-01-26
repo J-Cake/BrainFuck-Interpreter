@@ -1,41 +1,44 @@
-import State from './state';
+import {install} from 'source-map-support';
+
+import state, {State} from './state';
 import Lex from './lexer';
-import Format from './format';
-import Execute from './executer';
-import ExecuteBreakable from './execute-break';
-import initOptions, {Options, options} from './options';
+import Format, {queryFn, Statement} from './format';
+import initOptions, {debugAction, Options, options} from './options';
 
-type interpreter = (brainfuck: string, queryFunc: () => Promise<string>, options?: Options) => Promise<number>;
+install();
 
-const exec: interpreter = (brainfuck: string, queryFunc: () => Promise<string>, options?: Options): Promise<number> => {
-    initOptions(options)
-    return Execute(Format(Lex(brainfuck).filter(i => !!i)).filter(i => !!i), queryFunc);
+const exec = async function (brainfuck: string, queryFunc: queryFn, options?: Options): Promise<number> {
+    const opts = initOptions(options);
+
+    await evalFn(await Format(Lex(brainfuck)), queryFunc, opts.action);
+
+    return state.memory[state.pointer];
 }
 
-const interpreters: {
-    [name: string]: interpreter
-} = {
-    basic: exec
-};
-
-function defaultFunction(): interpreter {
-    return exec;
+export const evalFn = async function(statements: Statement[], queryFn: queryFn, action: debugAction) {
+    if (typeof options.action === 'function')
+        for await (const state of ExecuteBreakable(statements, queryFn)) options.action(state);
+    else
+        await Execute(statements, queryFn);
 }
 
-export function interpreter(name: string, intereter: interpreter) {
-    interpreters[name] = intereter;
+export async function Execute(statements: Statement[], query: queryFn): Promise<number> {
+    for (const i of statements)
+        await i.action(state, query);
+    return state.memory[state.pointer];
 }
 
-export default async (brainfuck: string, queryFunc: () => Promise<string>, options?: Options) => await defaultFunction()(brainfuck, queryFunc, options);
+export async function *ExecuteBreakable(statements: Statement[], query: queryFn): AsyncGenerator<State, number> {
+    for (const i of statements) {
+        await i.action(state, query);
+        yield state;
+    }
+    return state.memory[state.pointer];
+}
+
+export default async (brainfuck: string, queryFunc: () => Promise<string>, options?: Options) => await exec(brainfuck, queryFunc, options);
 // export it so that people who want to write a graphical wrapper *cough* me *cough* can do that without having to rewrite the damn thing
 
-export const state = State;
+export {default as state} from './state';
 // mostly for debugging purposes
 // allows peeking at state before and after running certain command
-
-export const debuggable = {
-    Lex,
-    Format,
-    Execute,
-    ExecuteBreakable // it's the same function as Execute except it yields the state at every iterations. This allows one to attatch a debugger to it
-};
