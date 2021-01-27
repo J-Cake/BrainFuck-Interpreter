@@ -1,15 +1,17 @@
+import {options} from './options'
+
 export interface State {
-    memoryIndex: number,
-    memory: Array<number>,
-    maxMemory: number
+    pointer: number,
+    memory: number[],
+    memSize: number
 }
 
-const maxMem = 256;
+const maxMem = options.maxMemory;
 
 const state: State = {
-    memoryIndex: 0,
+    pointer: 0,
     memory: new Array(maxMem).fill(0),
-    maxMemory: maxMem
+    memSize: maxMem
 };
 
 export default state;

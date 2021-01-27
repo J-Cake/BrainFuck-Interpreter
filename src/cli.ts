@@ -1,10 +1,8 @@
-import readline from "readline";
-import fs from 'fs';
-import path from 'path';
+import * as readline from "readline";
+import * as fs from 'fs';
+import * as path from 'path';
 
-import Lexer from './lexer';
-import Format from "./format";
-import Execute from "./executer";
+import BrainFuck from './index';
 import State from "./state";
 
 const bfHistory: string[] = [];
@@ -20,26 +18,26 @@ function memory(query: string[]): string {
     } else if (req[0] === "expand") {
         const size = Number(req[1]);
         if (!isNaN(size)) {
-            State.maxMemory += Number(req[1]);
-            const tmpMem = State.memory.splice(0, State.maxMemory);
-            State.memory = [...tmpMem, ...new Array(State.maxMemory - tmpMem.length).fill(0)];
+            State.memSize += Number(req[1]);
+            const tmpMem = State.memory.splice(0, State.memSize);
+            State.memory = [...tmpMem, ...new Array(State.memSize - tmpMem.length).fill(0)];
 
-            return `${State.maxMemory} allocated to Memory`;
+            return `${State.memSize} allocated to Memory`;
         } else
             return "Error, cannot expand by value of non-numeric type";
     } else if (req[0] === "reduce") {
         const size = Number(req[1]);
         if (!isNaN(size)) {
-            State.maxMemory -= Number(req[1]);
-            State.memory = State.memory.splice(0, State.maxMemory);
-            return `${State.maxMemory} allocated to Memory`;
+            State.memSize -= Number(req[1]);
+            State.memory = State.memory.splice(0, State.memSize);
+            return `${State.memSize} allocated to Memory`;
         } else
             return "Error, cannot reduce by value of non-numeric type";
     } else if (req[0] === "fixed") {
         const size = Number(req[1]);
         if (!isNaN(size)) {
             State.memory = State.memory.slice(0, size);
-            return `Set memory size to ${State.maxMemory = size}`;
+            return `Set memory size to ${State.memSize = size}`;
         } else
             return "Error, cannot fix to value of non-numeric type";
     } else if (req[0] === "set") {
@@ -47,17 +45,17 @@ function memory(query: string[]): string {
         const value = Number(req[2]);
 
         if (!isNaN(index) && !isNaN(value))
-            if (index < State.maxMemory && index >= 0 && typeof State.memory[index] !== "undefined")
+            if (index < State.memSize && index >= 0 && typeof State.memory[index] !== "undefined")
                 return `Memory at index ${index}, set to ${State.memory[index] = value}`;
             else
                 return `Error, invalid memory address, ${index}`;
         else
             return `Error, both index and value must be numbers`;
     } else if (req[0] === "clear") {
-        State.memory = new Array<number>(State.maxMemory).fill(0);
+        State.memory = new Array<number>(State.memSize).fill(0);
         return `Memory cleared`;
     } else if (req[0] === "pointer")
-        return String(State.memoryIndex);
+        return String(State.pointer);
     else
         return `Available options are "dump", "expand <value>", "reduce <value>", "fixed <size>", "set <index> <value>" and "clear"`;
 }
@@ -86,15 +84,15 @@ function dump(query: string[]): string {
 
 function memLoc(query: string[]): string {
     if (!query[1] || query[1] === "dump")
-        return `Memory Index At: ${String(State.memoryIndex)}`;
+        return `Memory Index At: ${String(State.pointer)}`;
     else if (query[1] === "reset")
-        return `Reset Memory Index to: ${State.memoryIndex = 0}`;
+        return `Reset Memory Index to: ${State.pointer = 0}`;
     else if (query[1] === "set")
         if (!isNaN(Number(query[2])))
-            if (Number(query[2]) >= 0 && Number(query[2]) < State.maxMemory)
-                return `Set Memory Index to: ${State.memoryIndex = Number(query[2])}`;
+            if (Number(query[2]) >= 0 && Number(query[2]) < State.memSize)
+                return `Set Memory Index to: ${State.pointer = Number(query[2])}`;
             else
-                return `Error, pointer out of bounds. The pointer must be between 0 and ${State.maxMemory}`
+                return `Error, pointer out of bounds. The pointer must be between 0 and ${State.memSize}`
         else
             return "Error, cannot set to value of non-numeric type";
     else
@@ -136,7 +134,8 @@ async function load(query: string[], queryFn: () => Promise<string>): Promise<st
 
     for (const file of filesToImport)
         if (fs.existsSync(file))
-            await Execute(await Format(await Lexer(fs.readFileSync(file, 'utf8'))), queryFn);
+            // await Execute(await Format(await Lexer(fs.readFileSync(file, 'utf8'))), queryFn);
+            await BrainFuck(fs.readFileSync(file, 'utf8'), queryFn);
         else {
             console.log(`File ${file} doesn't exist - Skipping`);
             filesSkipped.push(file);
@@ -151,7 +150,7 @@ async function load(query: string[], queryFn: () => Promise<string>): Promise<st
 }
 
 export default function prompt(queryFn: () => Promise<string>, rlIf: readline.Interface) {
-    rlIf.question("> ", async function (response: string) {
+    rlIf.question("~ ", async function (response: string) {
         let query = response.toLowerCase().split(" ");
 
         if (query[0] === "exit") {
@@ -171,7 +170,7 @@ export default function prompt(queryFn: () => Promise<string>, rlIf: readline.In
             console.log(await load(query, queryFn));
         else if (response) {
             bfHistory.push(response);
-            await Execute(await Format(await Lexer(response)), queryFn);
+            await BrainFuck(response, queryFn);
         }
 
         prompt(queryFn, rlIf);

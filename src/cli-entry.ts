@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 
-import fs from "fs";
-import path from "path";
-import os from "os";
+import * as readline from "readline";
+import * as fs from "fs";
+import * as path from "path";
+import * as os from "os";
 
 import BrainFuck from './index';
 
 import CLI from './cli';
-import readline from "readline";
-import State from "./state";
 
 const Package = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 
@@ -18,27 +17,16 @@ let rl = readline.createInterface({
 });
 
 export function query(): Promise<string> { // Hi
-    if (process.stdin.isTTY)
-        process.stdin.setRawMode(true);
-
-    return new Promise<string>(function (resolve: (data: any) => void) {
-        new Promise<string>(function (resolve: (data: any) => void) {
-            if (process.stdin.isTTY) {
-                process.stdin.on("keypress", function (string, key) {
-                    if (key.sequence === "\u0003")
-                        process.exit(0);
-
-                    process.stdin.removeAllListeners();
-
-                    resolve(key.sequence[0])
-                });
-            } else {
-                rl.question("", (ans: string) => resolve(ans[0]));
-            }
-        }).then(function (key: string) {
-            State.memory[State.memoryIndex] = key.charCodeAt(0);
-            resolve(key);
-        });
+    return new Promise<string>(function (resolve: (data: any) => void, reject) {
+        if (process.stdin.isTTY) {
+            process.stdin.once("keypress", function (chunk, key) {
+                if (key && key.escape)
+                    reject()
+                else
+                    resolve(chunk);
+            });
+        } else
+            rl.question("", (ans: string) => resolve(ans[0]));
     });
 }
 
@@ -61,18 +49,8 @@ export function query(): Promise<string> { // Hi
         if (fs.existsSync(filePath)) {
             file = fs.readFileSync(filePath, "utf8");
 
-            // const tokens = Lex(file).filter(i => !!i);
-            // const formatted = Format(tokens).filter(i => !!i);
-            // // console.log(parsed);
-            //
-            // await Execute(formatted, query);
-
             await BrainFuck(file, query);
 
-            process.stdin.end();
-            process.stdout.end();
-
-            process.stdin.removeAllListeners();
             process.exit(0);
         } else {
             process.stderr.write(`The file "${fileArg || "index.bf"}" doesn't exist`);

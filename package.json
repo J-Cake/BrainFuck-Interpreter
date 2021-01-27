@@ -1,13 +1,16 @@
 {
 	"name": "bfc",
 	"description": "BrainFuck Interpreter! Execute and test BrainFuck in the Command Line!",
-	"version": "1.2.0",
-	
+	"version": "2.0.2",
 	"main": "./dist/cli-entry.js",
 	"bin": "./dist/index.js",
-	
+	"scripts": {
+		"build": "tsc",
+		"test": "node ./test/index.js"
+	},
 	"license": "MIT",
-	"dependencies": {
-		"@types/node": "^12.12.7"
+	"devDependencies": {
+		"@types/node": "^12.12.7",
+		"source-map-support": "^0.5.19"
 	}
 }

@@ -1,17 +1,17 @@
-import Token from './token';
+import TokenClass from './tokenClass';
 
 const Grammar: {
-    // [key: string]: () => Token | "[" | "]"
-    [key: string]: () => Token
+    // [key: string]: () => TokenClass | "[" | "]"
+    [key: string]: () => TokenClass
 } = {
-    "+": Token.Increment,
-    "-": Token.Decrement,
-    "<": Token.LShift,
-    ">": Token.RShift,
-    ",": Token.Read,
-    ".": Token.Write,
-    "[": Token.Start,
-    "]": Token.End
+    "+": TokenClass.Increment,
+    "-": TokenClass.Decrement,
+    "<": TokenClass.LShift,
+    ">": TokenClass.RShift,
+    ",": TokenClass.Read,
+    ".": TokenClass.Write,
+    "[": TokenClass.Start,
+    "]": TokenClass.End
 };
 
 export default Grammar;

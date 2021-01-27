@@ -1,23 +1,68 @@
-import Token from "./token";
-import Grammar from "./grammar";
+// import TokenClass from "./token";
+// import Grammar from "./grammar";
 
-// export default function Lex(source: string): Array<Token | "[" | "]"> {
-export default function Lex(source: string): Token[] {
-    // const tokens: Array<Token | "[" | "]"> = [];
+export enum TokenType {
+    Inc,
+    Dec,
+    PInc,
+    PDec,
+    Out,
+    In,
+    LBracket,
+    RBracket,
+    Comment,
+    WhiteSpace,
+}
+
+export const matchers: Record<TokenType, (char: string) => boolean> = {
+    [TokenType.Inc]: tok => tok === '+',
+    [TokenType.Dec]: tok => tok === '-',
+    [TokenType.PInc]: tok => tok === '>',
+    [TokenType.PDec]: tok => tok === '<',
+    [TokenType.Out]: tok => tok === '.',
+    [TokenType.In]: tok => tok === ',',
+    [TokenType.LBracket]: tok => tok === '[',
+    [TokenType.RBracket]: tok => tok === ']',
+    [TokenType.Comment]: tok => /^#.*\n$/.test(tok),
+    [TokenType.WhiteSpace]: tok => /^\s+$/.test(tok),
+}
+
+export type Token = {
+    source: string,
+    type: TokenType,
+    charIndex?: number,
+    file?: string
+}
+
+export default function Lex(input: string, fileName?: string): Token[] {
     const tokens: Token[] = [];
 
-    let line: number = 0;
-    let char: number = 0;
+    let source: string[] = Array.from(input);
 
-    for (const i of [...source]) {
-        if (i === "\n") {
-            line++;
-            char = 0;
-        } else
-            char++;
+    while (source.length > 0) {
+        const accumulator: string[] = [];
+        let token: Token | null = null;
 
-        if (i in Grammar)
-            tokens.push(Grammar[i]().setPos(line, char));
+        for (const i of source) {
+            accumulator.push(i);
+
+            for (const [a, i] of Object.entries(matchers))
+                if (i(accumulator.join('')))
+                    token = {
+                        source: accumulator.join(''),
+                        type: Number(a) as TokenType,
+                        file: fileName,
+                        charIndex: 0
+                    };
+        }
+
+        if (token) {
+            tokens.push(token);
+            source = source.slice(token.source.length);
+        } else {
+            console.error(`Invalid token ${accumulator.join('')}`);
+            process.exit(1);
+        }
     }
 
     return tokens;

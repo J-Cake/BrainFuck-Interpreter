@@ -133,7 +133,7 @@
         "version": "7fcf27be79d6111779d50a35d951c8272c8189e55c3f57f667af6183fef6e531",
         "signature": "7ab03d497670c3b68711d9b14a8f63379df312872e3fd79815df12ff73e0195b"
       },
-      "./src/token.ts": {
+      "./src/tokenClass.ts": {
         "version": "66a22a1568f91539e46165e1779bea232577cf9d65079bc9a5b34ebe75e5c003",
         "signature": "880c0f1ecb3cdc75221522022347a3ef8a36a0fa5a613199cdc3df64c2fe0504"
       },
@@ -564,7 +564,7 @@
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/util.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/util.d.ts"
       ],
-      "./src/token.ts": [
+      "./src/tokenClass.ts": [
         "./src/state.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/fs.d.ts",
@@ -572,14 +572,14 @@
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "./src/grammar.ts": [
-        "./src/token.ts",
+        "./src/tokenClass.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/util.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "./src/lexer.ts": [
-        "./src/token.ts",
+        "./src/tokenClass.ts",
         "./src/grammar.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/fs.d.ts",
@@ -587,21 +587,21 @@
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "./src/format.ts": [
-        "./src/token.ts",
+        "./src/tokenClass.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/util.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "./src/executer.ts": [
-        "./src/token.ts",
+        "./src/tokenClass.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/util.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "./src/execute-break.ts": [
-        "./src/token.ts",
+        "./src/tokenClass.ts",
         "./src/state.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/fs.d.ts",
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/fs.d.ts",
@@ -1198,20 +1198,20 @@
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/ts3.2/util.d.ts"
       ],
       "./src/grammar.ts": [
-        "./src/token.ts"
+        "./src/tokenClass.ts"
       ],
       "./src/lexer.ts": [
-        "./src/token.ts"
+        "./src/tokenClass.ts"
       ],
       "./src/format.ts": [
-        "./src/token.ts"
+        "./src/tokenClass.ts"
       ],
       "./src/executer.ts": [
-        "./src/token.ts"
+        "./src/tokenClass.ts"
       ],
       "./src/execute-break.ts": [
         "./src/state.ts",
-        "./src/token.ts"
+        "./src/tokenClass.ts"
       ],
       "./src/cli.ts": [
         "./node_modules/.pnpm/registry.npmjs.org/@types/node/12.12.30/node_modules/@types/node/readline.d.ts"
@@ -1615,7 +1615,7 @@
       "../../../../../usr/local/share/.config/yarn/global/node_modules/typescript/lib/lib.esnext.bigint.d.ts",
       "../../../../../usr/local/share/.config/yarn/global/node_modules/typescript/lib/lib.es2016.full.d.ts",
       "./src/state.ts",
-      "./src/token.ts",
+      "./src/tokenClass.ts",
       "./src/grammar.ts",
       "./src/lexer.ts",
       "./src/format.ts",
