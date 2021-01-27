@@ -9,7 +9,7 @@ export interface Options {
 }
 
 export const options: Options = {
-    maxMemory: 4,
+    maxMemory: 256,
     prompt: `#`,
     action: null
 }
